@@ -1,0 +1,14 @@
+.navbar-container {
+    background-color: grey;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Cherry Bomb';
+  }
+  
+  .navbar-link {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 1.2em;
+  }
+  
