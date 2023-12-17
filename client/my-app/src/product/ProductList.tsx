@@ -10,24 +10,15 @@ const ProductList: React.FC = () => {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/getDisplayProducts');
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
     fetchProducts();
   }, [editingProductId]);
 
-  const handleDelete = async (productId: string) => {
+  const fetchProducts = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/delete/${productId}`);
-      setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
+      const response = await axios.get('http://localhost:8080/api/getDisplayProducts');
+      setProducts(response.data);
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error('Error fetching products:', error);
     }
   };
 
@@ -48,7 +39,10 @@ const ProductList: React.FC = () => {
             <UIProduct product={product} />
             <div>
               <button onClick={() => handleEdit(product.id)}>Edit</button>
-              <DeleteProduct productId={product.id} onDelete={() => handleDelete(product.id)} />
+              <DeleteProduct
+                productId={product.id}
+                onProductDeleted={fetchProducts}
+              />
             </div>
             {editingProductId === product.id && (
               <EditProduct

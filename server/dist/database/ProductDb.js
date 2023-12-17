@@ -3,7 +3,7 @@ import { Timestamp, addDoc, collection, doc, getDoc, updateDoc } from 'firebase/
 async function addProduct(newProduct) {
     try {
         if (!newProduct.title) {
-            throw new Error('Title and creatorUserId are required fields');
+            throw new Error('Title is required field');
         }
         const productToAdd = {
             ...newProduct,

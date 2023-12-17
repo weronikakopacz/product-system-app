@@ -11,10 +11,10 @@ interface Product {
   imageUrl: string;
 }
 
-async function addProduct(newProduct: Omit<Product, 'id'>) {
+async function addProduct(newProduct: Omit<Product, 'id' | 'isDeleted' | 'creationDate'>) {
   try {
     if (!newProduct.title) {
-      throw new Error('Title and creatorUserId are required fields');
+      throw new Error('Title is required field');
     }
 
     const productToAdd: Product = {
