@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import { deleteProduct } from '../services/ProductService';
 
 interface DeleteProductProps {
   productId: string;
@@ -9,7 +9,7 @@ interface DeleteProductProps {
 const DeleteProduct: React.FC<DeleteProductProps> = ({ productId, onProductDeleted }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/delete/${productId}`);
+      await deleteProduct(productId);
       onProductDeleted();
     } catch (error) {
       console.error('Error deleting product:', error);

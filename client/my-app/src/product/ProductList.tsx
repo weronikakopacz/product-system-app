@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import UIProduct, { Product } from './UIProduct';
+import { Product } from '../models/Product';
+import PrintProduct from './PrintProduct';
 import DeleteProduct from './DeleteProduct';
 import EditProduct from './EditProduct';
+import { fetchProducts } from '../services/ProductService';
 import '../css/ProductList.css';
 
 const ProductList: React.FC = () => {
@@ -10,18 +11,17 @@ const ProductList: React.FC = () => {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchProducts();
+    fetchData();
   }, [editingProductId]);
 
-  const fetchProducts = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/getDisplayProducts');
-      setProducts(response.data);
+      const productsData = await fetchProducts();
+      setProducts(productsData);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error setting products in state:', error);
     }
   };
-
   const handleEdit = (productId: string) => {
     setEditingProductId(productId);
   };
@@ -36,12 +36,12 @@ const ProductList: React.FC = () => {
       <ul>
         {products.map((product) => (
           <li key={product.id}>
-            <UIProduct product={product} />
+            <PrintProduct product={product} />
             <div>
               <button onClick={() => handleEdit(product.id)}>Edit</button>
               <DeleteProduct
                 productId={product.id}
-                onProductDeleted={fetchProducts}
+                onProductDeleted={fetchData}
               />
             </div>
             {editingProductId === product.id && (

@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
-import axios from 'axios';
-import { Product } from './UIProduct';
 import '../css/EditProduct.css'
+import { Product } from '../models/Product';
+import { editProduct } from '../services/ProductService';
 
 interface EditProductProps {
   productId: string;
@@ -11,15 +11,29 @@ interface EditProductProps {
 
 const EditProduct: React.FC<EditProductProps> = ({ productId, initialData, onEditDone }) => {
   const [editedData, setEditedData] = useState<Product>(initialData);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const validateForm = () => {
+    if (!editedData.title.trim()) {
+      setError('Title cannot be empty');
+      return false;
+    }
+    setError(null);
+    return true;
+  };
+
   const handleEdit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      await axios.put(`http://localhost:8080/api/edit/${productId}`, editedData);
+      await editProduct(editedData);
       onEditDone();
     } catch (error) {
       console.error('Error editing product:', error);
@@ -45,6 +59,7 @@ const EditProduct: React.FC<EditProductProps> = ({ productId, initialData, onEdi
         Image URL:
         <input type="text" name="imageUrl" value={editedData.imageUrl} onChange={handleChange} />
       </label>
+      {error && <p className="error-message">{error}</p>}
       <button onClick={handleEdit}>Edit</button>
       <button onClick={handleCancel}>Cancel</button>
     </div>

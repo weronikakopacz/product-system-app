@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../css/AddProduct.css';
+import { addProduct } from '../services/ProductService';
 
 interface AddProductProps {}
 
@@ -14,6 +14,8 @@ const AddProduct: React.FC<AddProductProps> = () => {
     imageUrl: '',
   });
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewProduct((prevData) => ({
@@ -22,19 +24,28 @@ const AddProduct: React.FC<AddProductProps> = () => {
     }));
   };
 
+  const validateForm = () => {
+    if (!newProduct.title.trim()) {
+      setError('Title cannot be empty');
+      return false;
+    }
+    setError(null);
+    return true;
+  };
+
   const handleAddProduct = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      await axios.post('http://localhost:8080/api/add', newProduct, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await addProduct(newProduct);
       setNewProduct({ title: '', description: '', imageUrl: '' });
       navigate('/');
     } catch (error) {
-      console.error('Błąd podczas dodawania produktu:', error);
+      console.error('Error adding product:', error);
     }
-  };  
+  };
 
   return (
     <div className="add-product-container">
@@ -52,6 +63,7 @@ const AddProduct: React.FC<AddProductProps> = () => {
           Image URL:
           <input type="text" name="imageUrl" value={newProduct.imageUrl} onChange={handleInputChange} />
         </label>
+        {error && <p className="error-message">{error}</p>}
         <button type="button" onClick={handleAddProduct}>
           Add Product
         </button>
