@@ -1,15 +1,6 @@
-import { db } from "./FirebaseConfig.js";
+import { Product } from "../models/IProduct.js";
+import { db } from "../database/FirebaseConfig.js";
 import { Timestamp, addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
-
-interface Product {
-  id?: string;
-  title: string;
-  description: string;
-  isDeleted: boolean;
-  creationDate: Timestamp;
-  creatorUserId: string;
-  imageUrl: string;
-}
 
 async function addProduct(newProduct: Omit<Product, 'id' | 'isDeleted' | 'creationDate'>) {
   try {
@@ -63,4 +54,4 @@ async function editProduct(productId: string, updatedFields: Pick<Product, 'titl
   }
 }
 
-export { Product, addProduct, deleteProduct, editProduct };
+export { addProduct, deleteProduct, editProduct };

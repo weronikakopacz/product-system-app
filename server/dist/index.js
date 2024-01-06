@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { addProduct, deleteProduct, editProduct } from './database/ProductDb.js';
-import { getDisplayProducts } from './DisplayProduct.js';
+import { addProduct, deleteProduct, editProduct } from './product/Product.js';
+import { getDisplayProducts } from './product/DisplayProduct.js';
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json()); //parsowanie json
@@ -44,6 +44,7 @@ app.put('/api/edit/:productId', async (req, res) => {
         const updatedFields = req.body;
         await editProduct(productId, updatedFields);
         res.status(204).send();
+        console.log(updatedFields);
     }
     catch (error) {
         console.error('Error editing product:', error);

@@ -1,14 +1,6 @@
 import { getDocs, query, where, collection, Timestamp } from 'firebase/firestore';
-import { db } from './database/FirebaseConfig.js';
-
-interface DisplayProduct {
-  id: string;
-  title: string;
-  description: string;
-  creationDate: Timestamp;
-  creatorUserId: string;
-  imageUrl: string;
-}
+import { db } from '../database/FirebaseConfig.js';
+import { DisplayProduct } from '../models/IDisplayProduct.js';
 
 async function getDisplayProducts(): Promise<DisplayProduct[]> {
   try {

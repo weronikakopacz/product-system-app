@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { Product, addProduct, deleteProduct, editProduct } from './database/ProductDb.js';
-import { getDisplayProducts } from './DisplayProduct.js';
+import { addProduct, deleteProduct, editProduct } from './product/Product.js';
+import { getDisplayProducts } from './product/DisplayProduct.js';
+import { Product } from './models/IProduct.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
