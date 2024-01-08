@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import '../css/EditProduct.css'
-import { Product } from '../models/Product';
+import { Product } from '../models/IProduct';
 import { editProduct } from '../services/ProductService';
 
 interface EditProductProps {

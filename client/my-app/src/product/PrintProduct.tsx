@@ -1,5 +1,5 @@
 import React from 'react';
-import { Product } from '../models/Product';
+import { Product } from '../models/IProduct';
 
 const PrintProduct: React.FC<{ product: Product }> = ({ product }) => (
   <div>

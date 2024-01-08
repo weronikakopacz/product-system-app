@@ -1,16 +1,17 @@
 import axios from 'axios';
-import { Product } from '../models/Product';
+import { Product } from '../models/IProduct';
 
 const API_BASE_URL = 'http://localhost:8080/api';
 
-export const fetchProducts = async (): Promise<Product[]> => {
+export const fetchProducts = async (currentPage: number): Promise<{ products: Product[], totalPages: number }> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/getDisplayProducts`);
+    const url = `${API_BASE_URL}/getDisplayProducts?currentPage=${currentPage}`;
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error;
-  }
+  };
 };
 
 export const editProduct = async (editedData: Product): Promise<void> => {
