@@ -3,6 +3,7 @@ import cors from 'cors';
 import { addProduct, deleteProduct, editProduct } from './product/Product.js';
 import { getDisplayProducts } from './product/DisplayProduct.js';
 import { Product } from './models/IProduct.js';
+import { DisplayProduct } from './models/IDisplayProduct.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -36,13 +37,24 @@ app.delete('/api/delete/:productId', async (req, res) => {
 
 app.get('/api/getDisplayProducts', async (req, res) => {
   try {
-    const DisplayProducts = await getDisplayProducts();
-    res.status(200).json(DisplayProducts);
+    const currentPage = parseInt(req.query.currentPage as string, 10) || 1;
+    const pageSize = 5;
+
+    const displayProducts = await getDisplayProducts(pageSize);
+
+    const startIdx = (currentPage - 1) * pageSize;
+    const endIdx = startIdx + pageSize;
+    const limitedDisplayProducts = displayProducts.products.slice(startIdx, endIdx);
+
+    const totalPages = displayProducts.totalPages;
+
+    res.status(200).json({ products: limitedDisplayProducts, totalPages });
   } catch (error) {
     console.error('Error getting active display products:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 app.put('/api/edit/:productId', async (req, res) => {
   try {

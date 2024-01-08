@@ -30,8 +30,14 @@ app.delete('/api/delete/:productId', async (req, res) => {
 });
 app.get('/api/getDisplayProducts', async (req, res) => {
     try {
-        const DisplayProducts = await getDisplayProducts();
-        res.status(200).json(DisplayProducts);
+        const currentPage = parseInt(req.query.currentPage, 10) || 1;
+        const pageSize = 5;
+        const displayProducts = await getDisplayProducts(pageSize);
+        const startIdx = (currentPage - 1) * pageSize;
+        const endIdx = startIdx + pageSize;
+        const limitedDisplayProducts = displayProducts.products.slice(startIdx, endIdx);
+        const totalPages = displayProducts.totalPages;
+        res.status(200).json({ products: limitedDisplayProducts, totalPages });
     }
     catch (error) {
         console.error('Error getting active display products:', error);
@@ -44,7 +50,6 @@ app.put('/api/edit/:productId', async (req, res) => {
         const updatedFields = req.body;
         await editProduct(productId, updatedFields);
         res.status(204).send();
-        console.log(updatedFields);
     }
     catch (error) {
         console.error('Error editing product:', error);
