@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '../models/IProduct';
 
-const PrintProduct: React.FC<{ product: Product }> = ({ product }) => (
+const UIProduct: React.FC<{ product: Product }> = ({ product }) => (
   <div>
     <h3>{product.title}</h3>
     <p>{product.description}</p>
@@ -13,5 +13,5 @@ const PrintProduct: React.FC<{ product: Product }> = ({ product }) => (
   </div>
 );
 
-export default PrintProduct;
+export default UIProduct;
 

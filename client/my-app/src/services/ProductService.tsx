@@ -3,9 +3,9 @@ import { Product } from '../models/IProduct';
 
 const API_BASE_URL = 'http://localhost:8080/api';
 
-export const fetchProducts = async (currentPage: number): Promise<{ products: Product[], totalPages: number }> => {
+export const fetchProducts = async (currentPage: number, searchQuery?: string): Promise<{ products: Product[], totalPages: number }> => {
   try {
-    const url = `${API_BASE_URL}/getDisplayProducts?currentPage=${currentPage}`;
+    const url = `${API_BASE_URL}/getDisplayProducts?currentPage=${currentPage}${searchQuery ? `&searchQuery=${searchQuery}` : ''}`;
     const response = await axios.get(url);
     return response.data;
   } catch (error) {

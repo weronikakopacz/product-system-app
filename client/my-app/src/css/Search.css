@@ -1,0 +1,25 @@
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    margin-right: 10px;
+  }
+  
+  #search {
+    padding: 8px;
+    margin-right: 10px;
+    width: 6000px;
+  }
+  
+  .search-button {
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .search-button:disabled {
+    cursor: not-allowed;
+    background-color: #ddd;
+  }
