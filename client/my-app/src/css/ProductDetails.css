@@ -1,0 +1,35 @@
+  h3 {
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+  }
+  
+  p:empty {
+    color: #888;
+    font-style: italic;
+  }
+  
+  p.error-message {
+    color: #ff0000;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .button {
+    font-size: 14px;
+    padding: 8px 12px;
+    margin-right: 8px;
+    cursor: pointer;
+    width: 200px;
+  }
+  

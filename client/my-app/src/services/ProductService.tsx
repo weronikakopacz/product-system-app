@@ -45,3 +45,14 @@ export const addProduct = async (newProductData: any): Promise<void> => {
     throw error;
   }
 };
+
+export const getProductById = async (productId: string): Promise<Product> => {
+  try {
+    const url = `${API_BASE_URL}/getDisplayProducts/${productId}`;
+    const response = await axios.get(url);
+    return response.data.product;
+  } catch (error) {
+    console.error('Error fetching product by ID:', error);
+    throw error;
+  }
+};

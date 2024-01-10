@@ -3,6 +3,7 @@ import cors from 'cors';
 import { addProduct, deleteProduct, editProduct } from './product/ProductRepository.js';
 import { getDisplayProducts } from './product/DisplayProductRepository.js';
 import { Product } from './models/IProduct.js';
+import { getProductDetails } from './product/ProductDetails.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -39,7 +40,6 @@ app.get('/api/getDisplayProducts', async (req, res) => {
   try {
     const currentPage = parseInt(req.query.currentPage as string, 10) || 1;
     const searchQuery = req.query.searchQuery as string | undefined;
-    console.log(searchQuery);
 
     const displayProducts = await getDisplayProducts(PAGE_NUMBER, searchQuery);
 
@@ -56,6 +56,17 @@ app.get('/api/getDisplayProducts', async (req, res) => {
   }
 });
 
+app.get('/api/getDisplayProducts/:productId', async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const { product } = await getProductDetails(productId);
+
+    res.status(200).json({ product });
+  } catch (error) {
+    console.error('Error getting product by id:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 app.put('/api/edit/:productId', async (req, res) => {
   try {
