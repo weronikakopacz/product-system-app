@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { addProduct, deleteProduct, editProduct } from './product/Product.js';
-import { getDisplayProducts } from './product/DisplayProduct.js';
+import { addProduct, deleteProduct, editProduct } from './product/ProductRepository.js';
+import { getDisplayProducts } from './product/DisplayProductRepository.js';
 import { Product } from './models/IProduct.js';
-import { DisplayProduct } from './models/IDisplayProduct.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const PAGE_NUMBER = 5;
 
 app.use(express.json()); //parsowanie json
 app.use(cors()); //komunikacja między serwerami
@@ -38,12 +38,13 @@ app.delete('/api/delete/:productId', async (req, res) => {
 app.get('/api/getDisplayProducts', async (req, res) => {
   try {
     const currentPage = parseInt(req.query.currentPage as string, 10) || 1;
-    const pageSize = 5;
+    const searchQuery = req.query.searchQuery as string | undefined;
+    console.log(searchQuery);
 
-    const displayProducts = await getDisplayProducts(pageSize);
+    const displayProducts = await getDisplayProducts(PAGE_NUMBER, searchQuery);
 
-    const startIdx = (currentPage - 1) * pageSize;
-    const endIdx = startIdx + pageSize;
+    const startIdx = (currentPage - 1) * PAGE_NUMBER;
+    const endIdx = startIdx + PAGE_NUMBER;
     const limitedDisplayProducts = displayProducts.products.slice(startIdx, endIdx);
 
     const totalPages = displayProducts.totalPages;

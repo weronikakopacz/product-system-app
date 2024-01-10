@@ -1,16 +1,25 @@
-import { query, where, limit, getDocs, collection, orderBy } from 'firebase/firestore';
+import { query, where, getDocs, collection, orderBy } from 'firebase/firestore';
 import { db } from '../database/FirebaseConfig.js';
 import { DisplayProduct } from '../models/IDisplayProduct.js';
 
-async function getDisplayProducts(pageSize: number): Promise<{ products: DisplayProduct[], totalPages: number }> {
+async function getDisplayProducts(pageSize: number, searchQuery?: string): Promise<{ products: DisplayProduct[], totalPages: number }> {
   try {
     const productsCollection = collection(db, 'products');
 
-    const q = query(
+    let q = query(
       productsCollection,
       where('isDeleted', '==', false),
-      orderBy('creationDate'),
+      orderBy('title'),
     );
+
+    if (searchQuery) {
+      q = query(
+        productsCollection,
+        where('isDeleted', '==', false),
+        where('title', '>=', searchQuery),
+        where('title', '<=', searchQuery + '\uf8ff'),
+        orderBy('title')
+      )};
 
     const querySnapshot = await getDocs(q);
 
