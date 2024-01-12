@@ -1,16 +1,16 @@
 import React, { useState, ChangeEvent } from 'react';
-import '../css/EditProduct.css'
-import { Product } from '../models/IProduct';
-import { editProduct } from '../services/ProductService';
+import { Comment } from '../models/IComment';
+import { editComment } from '../services/CommentService';
+import '../css/EditComment.css'
 
-interface EditProductProps {
-  productId: string;
-  initialData: Product;
+interface EditCommentProps {
+  commentId: string;
+  initialData: Comment;
   onEditDone: () => void;
 }
 
-const EditProduct: React.FC<EditProductProps> = ({ initialData, onEditDone }) => {
-  const [editedData, setEditedData] = useState<Product>(initialData);
+const EditComment: React.FC<EditCommentProps> = ({ initialData, onEditDone }) => {
+  const [editedData, setEditedData] = useState<Comment>(initialData);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -19,8 +19,8 @@ const EditProduct: React.FC<EditProductProps> = ({ initialData, onEditDone }) =>
   };
 
   const validateForm = () => {
-    if (!editedData.title.trim()) {
-      setError('Title cannot be empty');
+    if (!editedData.description.trim()) {
+      setError('Description cannot be empty');
       return false;
     }
     setError(null);
@@ -33,10 +33,10 @@ const EditProduct: React.FC<EditProductProps> = ({ initialData, onEditDone }) =>
     }
 
     try {
-      await editProduct(editedData);
+      await editComment(editedData);
       onEditDone();
     } catch (error) {
-      console.error('Error editing product:', error);
+      console.error('Error editing comment:', error);
     }
   };
 
@@ -45,19 +45,11 @@ const EditProduct: React.FC<EditProductProps> = ({ initialData, onEditDone }) =>
   };
 
   return (
-    <div className="edit-product">
-      <h2>Edit Product</h2>
-      <label>
-        Title:
-        <input type="text" name="title" value={editedData.title} onChange={handleChange} />
-      </label>
+    <div className="edit-comment">
+      <h2>Edit Comment</h2>
       <label>
         Description:
         <input type="text" name="description" value={editedData.description} onChange={handleChange} />
-      </label>
-      <label>
-        Image URL:
-        <input type="text" name="imageUrl" value={editedData.imageUrl} onChange={handleChange} />
       </label>
       {error && <p className="error-message">{error}</p>}
       <button onClick={handleEdit}>Edit</button>
@@ -66,4 +58,4 @@ const EditProduct: React.FC<EditProductProps> = ({ initialData, onEditDone }) =>
   );
 };
 
-export default EditProduct;
+export default EditComment;

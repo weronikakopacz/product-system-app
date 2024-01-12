@@ -1,0 +1,12 @@
+.edit-comment {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .error-message {
+    color: red;
+    margin-top: 5px;
+  }

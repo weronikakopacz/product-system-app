@@ -1,0 +1,18 @@
+.ui-comment {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .ui-comment-description {
+    font-weight: bold;
+  }
+  
+  .ui-comment-creator {
+    color: #888;
+  }
+  
+  .ui-comment-date {
+    color: #aaa;
+    font-size: 0.9em;
+  }

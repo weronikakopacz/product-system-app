@@ -1,6 +1,7 @@
 import { Product } from "../models/IProduct.js";
 import { db } from "../database/FirebaseConfig.js";
-import { Timestamp, addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { deleteComment } from "../comment/CommentRepository.js";
 
 async function addProduct(newProduct: Omit<Product, 'id' | 'isDeleted' | 'creationDate'>) {
   try {
@@ -29,9 +30,19 @@ async function deleteProduct(productId: string) {
     const productsCollection = collection(db, 'products');
     const productRef = doc(productsCollection, productId);
 
+    //usuwanie komentarzy do produktu
+    const commentsCollection = collection(db, 'comments');
+    const commentsQuery = query(commentsCollection, where('productId', '==', productId));
+    const querySnapshot = await getDocs(commentsQuery);
+
+    const deleteCommentsPromises = querySnapshot.docs.map(async (commentDoc) => {
+      await deleteComment(commentDoc.id);
+    });
+    await Promise.all(deleteCommentsPromises);
+
     await updateDoc(productRef, { isDeleted: true });
   } catch (error) {
-    console.error('Error deleting product from the database:', error);
+    console.error('Error deleting product and associated comments from the database:', error);
     throw error;
   }
 }

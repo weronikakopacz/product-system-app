@@ -5,6 +5,8 @@ import { Product } from '../models/IProduct';
 import '../css/ProductDetails.css';
 import DeleteProduct from './DeleteProduct';
 import EditProduct from './EditProduct';
+import CommentList from '../comment/CommentList';
+import AddComment from '../comment/AddComment';
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,9 +29,9 @@ const ProductDetails: React.FC = () => {
         console.error('Error setting products in state:', error);
       }
     };
+
     fetchData();
   }, [id, editingProductId]);
-  
 
   const handleEdit = () => {
     setEditingProductId(product?.id || '');
@@ -44,6 +46,14 @@ const ProductDetails: React.FC = () => {
       navigate('/');
     } catch (error) {
       console.error('Error deleting product:', error);
+    }
+  };
+
+  const handleCommentAdded = () => {
+    try {
+      window.location.reload();
+    } catch (error) {
+      console.error('Error adding comment:', error);
     }
   };
 
@@ -65,6 +75,8 @@ const ProductDetails: React.FC = () => {
           {editingProductId === product.id && (
             <EditProduct productId={product.id} initialData={product} onEditDone={handleEditDone} />
           )}
+          <AddComment productId={product.id} onCommentAdded={handleCommentAdded} />
+          <CommentList productId={product.id} />
         </div>
       ) : (
         <p>{'Product details not available.'}</p>

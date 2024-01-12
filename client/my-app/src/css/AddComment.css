@@ -1,0 +1,30 @@
+.add-comment-container {
+    margin-top: 50px;
+    padding: 20px;
+  }
+  
+  .add-comment-heading {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .description-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .add-comment-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px
+  }
+  
+  .add-comment-button:hover {
+    background-color: #0056b3;
+  }
+  
