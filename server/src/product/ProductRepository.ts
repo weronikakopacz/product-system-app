@@ -1,6 +1,6 @@
 import { Product } from "../models/IProduct.js";
 import { db } from "../database/FirebaseConfig.js";
-import { Timestamp, addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, doc, getDoc, getDocs, query, runTransaction, updateDoc, where } from 'firebase/firestore';
 import { deleteComment } from "../comment/CommentRepository.js";
 
 async function addProduct(newProduct: Omit<Product, 'id' | 'isDeleted' | 'creationDate'>) {
@@ -27,10 +27,6 @@ async function addProduct(newProduct: Omit<Product, 'id' | 'isDeleted' | 'creati
 
 async function deleteProduct(productId: string) {
   try {
-    const productsCollection = collection(db, 'products');
-    const productRef = doc(productsCollection, productId);
-
-    //usuwanie komentarzy do produktu
     const commentsCollection = collection(db, 'comments');
     const commentsQuery = query(commentsCollection, where('productId', '==', productId));
     const querySnapshot = await getDocs(commentsQuery);
@@ -39,6 +35,9 @@ async function deleteProduct(productId: string) {
       await deleteComment(commentDoc.id);
     });
     await Promise.all(deleteCommentsPromises);
+
+    const productsCollection = collection(db, 'products');
+    const productRef = doc(productsCollection, productId);
 
     await updateDoc(productRef, { isDeleted: true });
   } catch (error) {

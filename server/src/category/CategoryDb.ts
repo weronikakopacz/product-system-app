@@ -1,5 +1,5 @@
 import { addDoc, collection } from 'firebase/firestore';
-import { db } from './FirebaseConfig.js';
+import { db } from '../database/FirebaseConfig.js';
 
 interface Category {
     name: string;

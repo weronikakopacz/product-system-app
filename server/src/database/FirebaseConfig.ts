@@ -1,5 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import admin from 'firebase-admin';
+import { initializeApp, FirebaseApp } from 'firebase/app';
+import { getFirestore, Firestore } from 'firebase/firestore';
+import serviceAccount from './serviceAccountKey.json' assert { type: "json" };
 
 const firebaseConfig = {
   apiKey: "AIzaSyCcFy4LDJ0sIQLvw0bJKrlr45DyAWvfudg",
@@ -11,7 +13,12 @@ const firebaseConfig = {
   measurementId: "G-NCVZX3041T"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount)
+});
+
+const db: Firestore = getFirestore(firebaseApp);
 
 export { db };
