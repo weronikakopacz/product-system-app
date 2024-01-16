@@ -68,4 +68,13 @@ export const getUserId= async (accessToken: string): Promise<any> => {
     throw error;
   }
 };
-  
+
+export const getUserEmail = async (uid: string): Promise<{ email: string }> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/user/${uid}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user email:', error);
+    throw error;
+  }
+};

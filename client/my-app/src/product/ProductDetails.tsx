@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/ProductService';
 import { Product } from '../models/IProduct';
+import { getUserEmail } from '../services/UserService';
 import '../css/ProductDetails.css';
 import DeleteProduct from './DeleteProduct';
 import EditProduct from './EditProduct';
@@ -12,6 +13,7 @@ const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | undefined>(undefined);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [creatorEmail, setCreatorEmail] = useState<string | null>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +23,10 @@ const ProductDetails: React.FC = () => {
           const productData = await getProductById(id);
           if (productData) {
             setProduct(productData);
+            if (productData.creatorUserId) {
+              const userData = await getUserEmail(productData.creatorUserId);
+              setCreatorEmail(userData.email);
+            }
           } else {
             console.error('Product details not found.');
           }
@@ -63,7 +69,7 @@ const ProductDetails: React.FC = () => {
         <div>
           <h3>{product.title}</h3>
           <p>{product.description}</p>
-          <p>Creator: {product.creatorUserId}</p>
+          <p>Creator: {creatorEmail}</p>
           <p>Creation Date: {new Date(product.creationDate.seconds * 1000).toLocaleString()}</p>
           {product.imageUrl && <img src={product.imageUrl} alt={product.title} />}
           <div>

@@ -7,6 +7,7 @@ import { loginUser } from '../user/Login.js';
 import verifyToken, { DecodedToken } from '../user/VerifyToken.js';
 import admin from 'firebase-admin';
 import { getUserData } from '../user/GetUserData.js';
+import { use } from 'passport';
 
 const userRouter = express.Router();
 
@@ -118,6 +119,22 @@ userRouter.get('/userid', async (req: Request, res: Response) => {
     } catch (error) {
     console.error('Error getting user profile:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+userRouter.get('/user/:userUid', async (req: Request, res: Response) => {
+  try {
+    const uid = req.params.userUid;
+    const userData: UserData | null = await getUserData(uid);
+
+    if (userData) {
+      res.status(200).json({ email: userData.email });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error getting email by id:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
