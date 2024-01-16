@@ -15,6 +15,9 @@ const Navbar: React.FC = () => {
         </Link>
         {getAccessToken() ? (
           <>
+            <Link className="navbar-link" to="/user">
+              Profile
+            </Link>
             <Link className="navbar-link" to="/logout">
               Logout
             </Link>

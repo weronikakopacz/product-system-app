@@ -7,6 +7,7 @@ import Details from './pages/Details';
 import Login from './user/Login';
 import Registration from './user/Registration';
 import Logout from './user/Logout';
+import UserProfile from './user/UserProfile';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/user" element={<UserProfile />} />
         </Routes>
       </div>
     

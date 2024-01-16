@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '../services/UserService';
+import { getAccessToken } from '../services/AuthService';
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -8,7 +9,11 @@ const Logout = () => {
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        await logoutUser();
+        const accessToken = getAccessToken();
+        if (accessToken) {
+          await logoutUser(accessToken);
+        }
+
         navigate('/');
         window.location.reload();
       } catch (error) {

@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/AddProduct.css';
 import { addProduct } from '../services/ProductService';
+import { getAccessToken } from '../services/AuthService';
+import { getUserId } from '../services/UserService';
 
 interface AddProductProps {}
 
@@ -15,6 +17,17 @@ const AddProduct: React.FC<AddProductProps> = () => {
   });
 
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      const accessToken = getAccessToken();
+      if (!accessToken) {
+        setError('User not logged in. Please log in to add a product.');
+      }
+    };
+
+    checkAccessToken();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,7 +52,19 @@ const AddProduct: React.FC<AddProductProps> = () => {
     }
 
     try {
-      await addProduct(newProduct);
+      const accessToken = getAccessToken();
+      if (!accessToken) {
+        setError('User not logged in. Please log in to add a product.');
+        return;
+      }
+
+      const currentUser = await getUserId(accessToken);
+      const productData = {
+        ...newProduct,
+        creatorUserId: currentUser,
+      };
+      console.log(productData);
+      await addProduct(productData);
       setNewProduct({ title: '', description: '', imageUrl: '' });
       navigate('/');
     } catch (error) {

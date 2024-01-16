@@ -6,6 +6,7 @@ import { createUser } from '../user/Registration.js';
 import { loginUser } from '../user/Login.js';
 import verifyToken, { DecodedToken } from '../user/VerifyToken.js';
 import admin from 'firebase-admin';
+import { getUserData } from '../user/GetUserData.js';
 
 const userRouter = express.Router();
 
@@ -61,6 +62,62 @@ userRouter.post('/logout', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error during logout:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+userRouter.get('/user', async (req: Request, res: Response) => {
+  try {
+    const accessToken = req.header('Authorization')?.split(' ')[1];
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+  
+    const decodedToken: DecodedToken | null = await verifyToken(accessToken);
+    if (decodedToken) {
+      const userUid: string | undefined = decodedToken.userId;
+  
+      if (userUid) {
+        const userData: UserData | null = await getUserData(userUid);
+  
+        if (userData) {
+          return res.status(200).json(userData);
+        } else {
+          return res.status(404).json({ error: 'User not found' });
+        }
+      } else {
+        return res.status(401).json({ error: 'Invalid user data' });
+      }
+    } else {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    } catch (error) {
+    console.error('Error getting user profile:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+userRouter.get('/userid', async (req: Request, res: Response) => {
+  try {
+    const accessToken = req.header('Authorization')?.split(' ')[1];
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+  
+    const decodedToken: DecodedToken | null = await verifyToken(accessToken);
+    if (decodedToken) {
+      const userUid: string | undefined = decodedToken.userId;
+  
+      if (userUid) {
+        return res.status(200).json(userUid);
+      } else {
+        return res.status(401).json({ error: 'Invalid user token' });
+      }
+    } else {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    } catch (error) {
+    console.error('Error getting user profile:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

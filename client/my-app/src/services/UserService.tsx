@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { RegistrationData } from '../models/IRegistrationData';
-import { getAccessToken, removeAccessToken, setAccessToken } from './AuthService';
+import { removeAccessToken, setAccessToken } from './AuthService';
 
 const API_BASE_URL = 'http://localhost:8080/api/users';
 
@@ -24,10 +24,8 @@ export const loginUser = async (userData: RegistrationData): Promise<void> => {
   }
 };
 
-export const logoutUser = async (): Promise<void> => {
+export const logoutUser = async (accessToken: string): Promise<void> => {
   try {
-    const accessToken = getAccessToken();
-
     await axios.post(`${API_BASE_URL}/logout`, null, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -38,6 +36,36 @@ export const logoutUser = async (): Promise<void> => {
     console.log('User logged out successfully');
   } catch (error) {
     console.error('Error during logout:', error);
+  }
+};
+
+export const getUserProfile = async (accessToken: string): Promise<any> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error;
+  }
+};
+
+export const getUserId= async (accessToken: string): Promise<any> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/userid`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user id:', error);
+    throw error;
   }
 };
   
