@@ -24,9 +24,13 @@ export const editComment = async (editedData: Comment): Promise<void> => {
   }
 };
 
-export const deleteComment = async (commentId: string): Promise<void> => {
+export const deleteComment = async (commentId: string, accessToken: string): Promise<void> => {
   try {
-    await axios.delete(`${API_BASE_URL}/delete/${commentId}`);
+    await axios.delete(`${API_BASE_URL}/delete/${commentId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
   } catch (error) {
     console.error('Error deleting comment:', error);
     throw error;

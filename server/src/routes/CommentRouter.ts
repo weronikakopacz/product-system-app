@@ -3,6 +3,7 @@ import { Comment } from '../models/IComment.js';
 import { addComment, deleteComment, editComment } from "../comment/CommentRepository.js";
 import { getProductDetails } from "../product/ProductDetails.js";
 import { getDisplayComments } from "../comment/DisplayCommentRepository.js";
+import verifyToken, { DecodedToken } from "../user/VerifyToken.js";
 
 const commentRouter = express.Router();
 
@@ -29,6 +30,18 @@ commentRouter.post('/add/:productId', async (req: Request, res: Response) => {
 commentRouter.delete('/delete/:commentId', async (req, res) => {
   try {
     const commentId = req.params.commentId;
+    const accessToken = req.header('Authorization')?.split(' ')[1];
+
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const decodedToken: DecodedToken | null = await verifyToken(accessToken);
+
+    if (!decodedToken || decodedToken.role !== 'admin') {
+      return res.status(403).json({ error: 'Permission denied. User is not an admin.' });
+    }
+    
     await deleteComment(commentId);
 
     res.status(200).send('Comment marked as deleted successfully');

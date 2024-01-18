@@ -3,6 +3,7 @@ import { addProduct, deleteProduct, editProduct } from '../product/ProductReposi
 import { getDisplayProducts } from '../product/DisplayProductRepository.js';
 import { Product } from '../models/IProduct.js';
 import { getProductDetails } from '../product/ProductDetails.js';
+import verifyToken, { DecodedToken } from '../user/VerifyToken.js';
 
 const productRouter = express.Router();
 const PAGE_NUMBER = 5;
@@ -23,6 +24,18 @@ productRouter.post('/add', async (req, res) => {
 productRouter.delete('/delete/:productId', async (req, res) => {
   try {
     const productId = req.params.productId;
+    const accessToken = req.header('Authorization')?.split(' ')[1];
+
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const decodedToken: DecodedToken | null = await verifyToken(accessToken);
+
+    if (!decodedToken || decodedToken.role !== 'admin') {
+      return res.status(403).json({ error: 'Permission denied. User is not an admin.' });
+    }
+
     await deleteProduct(productId);
 
     res.status(200).send('Product marked as deleted successfully');

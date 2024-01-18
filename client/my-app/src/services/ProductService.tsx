@@ -24,9 +24,13 @@ export const editProduct = async (editedData: Product): Promise<void> => {
   }
 };
 
-export const deleteProduct = async (productId: string): Promise<void> => {
+export const deleteProduct = async (productId: string, accessToken: string): Promise<void> => {
   try {
-    await axios.delete(`${API_BASE_URL}/delete/${productId}`);
+    await axios.delete(`${API_BASE_URL}/delete/${productId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
   } catch (error) {
     console.error('Error deleting product:', error);
     throw error;
