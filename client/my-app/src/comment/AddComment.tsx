@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { addComment } from '../services/CommentService';
-import '../css/AddComment.css'
+import { getAccessToken } from '../services/AuthService';
+import { getUserId } from '../services/UserService';
+import '../css/AddComment.css';
 
 interface AddCommentProps {
   productId: string;
@@ -9,6 +11,18 @@ interface AddCommentProps {
 
 const AddComment: React.FC<AddCommentProps> = ({ productId, onCommentAdded }) => {
   const [description, setDescription] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      const accessToken = getAccessToken();
+      if (!accessToken) {
+        setError('User not logged in. Please log in to add a comment.');
+      }
+    };
+
+    checkAccessToken();
+  }, []);
 
   const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
@@ -17,11 +31,23 @@ const AddComment: React.FC<AddCommentProps> = ({ productId, onCommentAdded }) =>
   const handleAddComment = async () => {
     try {
       if (description.trim() === '') {
-        console.error('Description is required.');
+        setError('Description is required.');
         return;
       }
 
-      await addComment(productId, { description }); 
+      const accessToken = getAccessToken();
+      if (!accessToken) {
+        setError('User not logged in. Please log in to add a comment.');
+        return;
+      }
+
+      const currentUser = await getUserId(accessToken);
+      const commentData = {
+        description,
+        creatorUserId: currentUser,
+      };
+
+      await addComment(productId, commentData);
       onCommentAdded();
       setDescription('');
     } catch (error) {
@@ -42,6 +68,7 @@ const AddComment: React.FC<AddCommentProps> = ({ productId, onCommentAdded }) =>
           className="description-input"
         />
       </div>
+      {error && <p className="error-message">{error}</p>}
       <button className="add-comment-button" onClick={handleAddComment}>
         Add Comment
       </button>
