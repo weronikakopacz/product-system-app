@@ -78,3 +78,28 @@ export const getUserEmail = async (uid: string): Promise<{ email: string }> => {
     throw error;
   }
 };
+
+export const changeEmail = async (userId: string, newEmail: string): Promise<void> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/change-email`, {
+      userId,
+      newEmail,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error changing email:', error);
+    throw error;
+  }
+};
+
+export const changePassword = async (newPassword: string): Promise<void> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/change-password`, {
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error changing password:', error);
+    throw error;
+  }
+};

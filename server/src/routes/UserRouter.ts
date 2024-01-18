@@ -8,6 +8,8 @@ import verifyToken, { DecodedToken } from '../user/VerifyToken.js';
 import admin from 'firebase-admin';
 import { getUserData } from '../user/GetUserData.js';
 import { use } from 'passport';
+import { changePassword } from '../user/ChangePassword.js';
+import { changeEmail } from '../user/ChangeEmail.js';
 
 const userRouter = express.Router();
 
@@ -134,6 +136,30 @@ userRouter.get('/user/:userUid', async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error('Error getting email by id:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+userRouter.post('/change-email', async (req, res) => {
+  try {
+    const { userId, newEmail } = req.body;
+    await changeEmail(userId, newEmail);
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error changing email:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+userRouter.post('/change-password', async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+     await changePassword(newPassword);
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error changing password:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

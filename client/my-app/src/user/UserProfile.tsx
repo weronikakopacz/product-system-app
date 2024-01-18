@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { getUserProfile } from '../services/UserService';
 import { UserData } from '../models/IUserData';
+import ChangeEmail from './ChangeEmail';
+import ChangePassword from './ChangePassword';
 
 const UserProfile: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isEditEmail, setIsEditEmail] = useState(false);
+  const [isEditPassword, setIsEditPassword] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -24,6 +28,21 @@ const UserProfile: React.FC = () => {
     fetchUserProfile();
   }, []);
 
+  const handleEditEmail = () => {
+    setIsEditEmail(true);
+    setIsEditPassword(false);
+  };
+
+  const handleEditPassword = () => {
+    setIsEditEmail(false);
+    setIsEditPassword(true);
+  };
+
+  const handleEditDone = () => {
+    setIsEditEmail(false);
+    setIsEditPassword(false);
+  };
+
   return (
     <div>
       <h2>User Profile</h2>
@@ -31,6 +50,10 @@ const UserProfile: React.FC = () => {
         <>
           <p>Email: {userData.email}</p>
           <p>Role: {userData.role}</p>
+          <button onClick={handleEditEmail}>Edit Email</button>
+          <button onClick={handleEditPassword}>Edit Password</button>
+          {isEditEmail && <ChangeEmail userId={userData.uid} onChangeDone={handleEditDone} />}
+          {isEditPassword && <ChangePassword onChangeDone={handleEditDone} />}
         </>
       ) : (
         <p>Loading...</p>
