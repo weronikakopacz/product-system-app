@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { RegistrationData } from '../models/IRegistrationData';
 import { removeAccessToken, setAccessToken } from './AuthService';
+import { UserData } from '../models/IUserData';
 
 const API_BASE_URL = 'http://localhost:8080/api/users';
 
@@ -79,7 +80,7 @@ export const getUserEmail = async (uid: string): Promise<{ email: string }> => {
   }
 };
 
-export const changeEmail = async (userId: string, newEmail: string): Promise<void> => {
+export const changeEmail = async (userId: string, newEmail: string ): Promise<void> => {
   try {
     const response = await axios.post(`${API_BASE_URL}/change-email`, {
       userId,
@@ -100,6 +101,36 @@ export const changePassword = async (newPassword: string): Promise<void> => {
     return response.data;
   } catch (error) {
     console.error('Error changing password:', error);
+    throw error;
+  }
+};
+
+export const changeUserRole = async (userId: string, newRole: string): Promise<void> => {
+  try {
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      console.error('Access token not found.');
+      throw new Error('Access token not found.');
+    }
+
+    await axios.put(`${API_BASE_URL}/change-role`, { userId, newRole }, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+  } catch (error) {
+    console.error('Error changing user role:', error);
+    throw error;
+  }
+};
+
+
+export const getAllUsers = async (): Promise<UserData[]> => {
+  try {
+    const response = await axios.get<UserData[]>(`${API_BASE_URL}/allusers`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting users:', error);
     throw error;
   }
 };

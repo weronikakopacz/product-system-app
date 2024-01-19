@@ -3,11 +3,14 @@ import { getUserProfile } from '../services/UserService';
 import { UserData } from '../models/IUserData';
 import ChangeEmail from './ChangeEmail';
 import ChangePassword from './ChangePassword';
+import ChangeRole from './ChangeRole';
+import '../css/UserProfile.css'
 
 const UserProfile: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isEditEmail, setIsEditEmail] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
+  const [isEditRole, setIsEditRole] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -31,16 +34,25 @@ const UserProfile: React.FC = () => {
   const handleEditEmail = () => {
     setIsEditEmail(true);
     setIsEditPassword(false);
+    setIsEditRole(false);
   };
 
   const handleEditPassword = () => {
     setIsEditEmail(false);
     setIsEditPassword(true);
+    setIsEditRole(false);
+  };
+
+  const handleEditRole = () => {
+    setIsEditEmail(false);
+    setIsEditPassword(false);
+    setIsEditRole(true);
   };
 
   const handleEditDone = () => {
     setIsEditEmail(false);
     setIsEditPassword(false);
+    setIsEditRole(false);
   };
 
   return (
@@ -52,8 +64,12 @@ const UserProfile: React.FC = () => {
           <p>Role: {userData.role}</p>
           <button onClick={handleEditEmail}>Edit Email</button>
           <button onClick={handleEditPassword}>Edit Password</button>
+          {userData.role === 'admin' && (
+            <button onClick={handleEditRole}>Edit Role</button>
+          )}
           {isEditEmail && <ChangeEmail userId={userData.uid} onChangeDone={handleEditDone} />}
           {isEditPassword && <ChangePassword onChangeDone={handleEditDone} />}
+          {isEditRole && <ChangeRole onChangeDone={handleEditDone} />}
         </>
       ) : (
         <p>Loading...</p>
