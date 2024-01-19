@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import { changePassword } from '../services/UserService';
+import '../css/Button.css'
 
 interface ChangePasswordProps {
   onChangeDone: () => void;
@@ -45,8 +46,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ onChangeDone }) => {
         <input type="password" value={newPassword} onChange={handleChange} />
       </label>
       {error && <p className="error-message">{error}</p>}
-      <button onClick={handleChangePassword}>Change Password</button>
-      <button onClick={handleCancel}>Cancel</button>
+      <button className="edit-button" onClick={handleChangePassword}>Change Password</button>
+      <button className="edit-button" onClick={handleCancel}>Cancel</button>
     </div>
   );
 };

@@ -1,18 +1,17 @@
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
 
-  h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  p {
-    margin-bottom: 10px;
-  }
-  
-  button {
-    padding: 10px;
-    margin-right: 10px;
-    cursor: pointer;
-    margin-bottom: 50px;
-    width: 200px
-  }
+p {
+  margin-bottom: 10px;
+}
+
+.user-profile-button {
+  padding: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  margin-bottom: 50px;
+  width: 200px
+}
   

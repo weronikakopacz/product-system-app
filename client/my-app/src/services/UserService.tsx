@@ -22,6 +22,7 @@ export const loginUser = async (userData: RegistrationData): Promise<void> => {
     setAccessToken(response.data.accessToken);
   } catch (error) {
     console.error('Error during login:', error);
+    throw error;
   }
 };
 

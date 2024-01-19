@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { changeUserRole, getAllUsers } from '../services/UserService';
 import { UserData } from '../models/IUserData';
+import '../css/Button.css'
 
 interface ChangeRoleProps {
   onChangeDone: () => void;
@@ -75,8 +76,8 @@ const ChangeRole: React.FC<ChangeRoleProps> = ({ onChangeDone }) => {
           <option value="admin">Admin</option>
         </select>
       </label>
-      <button onClick={handleChangeRole}>Edit</button>
-      <button onClick={handleCancel}>Cancel</button>
+      <button className="edit-button" onClick={handleChangeRole}>Edit</button>
+      <button className="edit-button" onClick={handleCancel}>Cancel</button>
     </div>
   );
 };

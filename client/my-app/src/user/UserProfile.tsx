@@ -56,16 +56,16 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className='user-profile'>
       <h2>User Profile</h2>
       {userData ? (
         <>
           <p>Email: {userData.email}</p>
           <p>Role: {userData.role}</p>
-          <button onClick={handleEditEmail}>Edit Email</button>
-          <button onClick={handleEditPassword}>Edit Password</button>
+          <button className="user-profile-button"onClick={handleEditEmail}>Edit Email</button>
+          <button className="user-profile-button" onClick={handleEditPassword}>Edit Password</button>
           {userData.role === 'admin' && (
-            <button onClick={handleEditRole}>Edit Role</button>
+            <button className="user-profile-button" onClick={handleEditRole}>Edit Role</button>
           )}
           {isEditEmail && <ChangeEmail userId={userData.uid} onChangeDone={handleEditDone} />}
           {isEditPassword && <ChangePassword onChangeDone={handleEditDone} />}

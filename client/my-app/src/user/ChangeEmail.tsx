@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import { changeEmail } from '../services/UserService';
+import '../css/Button.css'
 
 interface ChangeEmailProps {
   userId: string;
@@ -47,8 +48,8 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ userId, onChangeDone }) => {
         <input type="email" value={newEmail} onChange={handleChange} />
       </label>
       {error && <p className="error-message">{error}</p>}
-      <button onClick={handleChangeEmail}>Change Email</button>
-      <button onClick={handleCancel}>Cancel</button>
+      <button className="edit-button" onClick={handleChangeEmail}>Change Email</button>
+      <button className="edit-button" onClick={handleCancel}>Cancel</button>
     </div>
   );
 };
