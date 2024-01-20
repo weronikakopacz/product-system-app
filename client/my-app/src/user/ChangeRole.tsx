@@ -76,8 +76,8 @@ const ChangeRole: React.FC<ChangeRoleProps> = ({ onChangeDone }) => {
           <option value="admin">Admin</option>
         </select>
       </label>
-      <button className="edit-button" onClick={handleChangeRole}>Edit</button>
-      <button className="edit-button" onClick={handleCancel}>Cancel</button>
+      <button className="user-button" onClick={handleChangeRole}>Edit</button>
+      <button className="user-button" onClick={handleCancel}>Cancel</button>
     </div>
   );
 };

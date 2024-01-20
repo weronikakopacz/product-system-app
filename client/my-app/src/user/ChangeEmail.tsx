@@ -48,8 +48,8 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ userId, onChangeDone }) => {
         <input type="email" value={newEmail} onChange={handleChange} />
       </label>
       {error && <p className="error-message">{error}</p>}
-      <button className="edit-button" onClick={handleChangeEmail}>Change Email</button>
-      <button className="edit-button" onClick={handleCancel}>Cancel</button>
+      <button className="user-button" onClick={handleChangeEmail}>Change Email</button>
+      <button className="user-button" onClick={handleCancel}>Cancel</button>
     </div>
   );
 };

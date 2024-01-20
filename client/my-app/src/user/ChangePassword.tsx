@@ -39,15 +39,15 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ onChangeDone }) => {
   };
 
   return (
-    <div className="change-password-form">
+    <div>
       <h2>Change Password</h2>
       <label>
         New Password:
         <input type="password" value={newPassword} onChange={handleChange} />
       </label>
       {error && <p className="error-message">{error}</p>}
-      <button className="edit-button" onClick={handleChangePassword}>Change Password</button>
-      <button className="edit-button" onClick={handleCancel}>Cancel</button>
+      <button className="user-button" onClick={handleChangePassword}>Change Password</button>
+      <button className="user-button" onClick={handleCancel}>Cancel</button>
     </div>
   );
 };
