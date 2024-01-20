@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { editCategory } from '../services/CategoryService';
 import { getAccessToken } from '../services/AuthService';
 
@@ -9,10 +9,13 @@ interface EditCategoryProps {
 }
 
 const EditCategory: React.FC<EditCategoryProps> = ({ categoryId, onCancel, onCategoryUpdated }) => {
-  const accessToken = getAccessToken();
   const [updatedFields, setUpdatedFields] = useState({
     name: '',
   });
+
+  useEffect(() => {
+    getAccessToken();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUpdatedFields({ ...updatedFields, [e.target.name]: e.target.value });
@@ -22,6 +25,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ categoryId, onCancel, onCat
     e.preventDefault();
 
     try {
+      const accessToken = getAccessToken();
       if (accessToken) {
         await editCategory(categoryId, updatedFields, accessToken);
         console.log('Category edited successfully');

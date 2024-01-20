@@ -37,8 +37,16 @@ productRouter.get('/getDisplayProducts', async (req, res) => {
   try {
     const currentPage = parseInt(req.query.currentPage as string, 10) || 1;
     const searchQuery = req.query.searchQuery as string | undefined;
+    const categoryIdsParam = req.query.categoryIds;
 
-    const displayProducts = await getDisplayProducts(PAGE_NUMBER, searchQuery);
+    let categoryIds: string[] = [];
+    if (typeof categoryIdsParam === 'string') {
+      categoryIds = JSON.parse(categoryIdsParam);
+    } else if (Array.isArray(categoryIdsParam)) {
+      categoryIds = categoryIdsParam.map(String);
+    }
+
+    const displayProducts = await getDisplayProducts(PAGE_NUMBER, searchQuery, categoryIds);
 
     const startIdx = (currentPage - 1) * PAGE_NUMBER;
     const endIdx = startIdx + PAGE_NUMBER;

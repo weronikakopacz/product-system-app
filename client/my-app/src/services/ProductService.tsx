@@ -3,9 +3,10 @@ import { Product } from '../models/IProduct';
 
 const API_BASE_URL = 'http://localhost:8080/api/products';
 
-export const fetchProducts = async (currentPage: number, searchQuery?: string): Promise<{ products: Product[], totalPages: number }> => {
+export const fetchProducts = async (currentPage: number, searchQuery?: string, categoryIds?: string[]): Promise<{ products: Product[], totalPages: number }> => {
   try {
-    const url = `${API_BASE_URL}/getDisplayProducts?currentPage=${currentPage}${searchQuery ? `&searchQuery=${searchQuery}` : ''}`;
+    const categoryIdsParam = categoryIds ? JSON.stringify(categoryIds) : undefined;
+    const url = `${API_BASE_URL}/getDisplayProducts?currentPage=${currentPage}${searchQuery ? `&searchQuery=${searchQuery}` : ''}${categoryIdsParam ? `&categoryIds=${categoryIdsParam}` : ''}`;
     const response = await axios.get(url);
     return response.data;
   } catch (error) {
