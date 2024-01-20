@@ -3,6 +3,7 @@
     flex-direction: column;
     max-width: 300px;
     margin: auto;
+    margin-top: 30px;
   }
   
   .category-input {

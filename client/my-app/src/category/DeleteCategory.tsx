@@ -26,7 +26,7 @@ const DeleteCategory: React.FC<DeleteCategoryProps> = ({ categoryId, onCategoryD
   };
 
   return (
-    <button className = "delete-button" onClick={handleDelete}>Delete Category</button>
+    <button className = "edit-button" onClick={handleDelete}>Delete Category</button>
   );
 };
 

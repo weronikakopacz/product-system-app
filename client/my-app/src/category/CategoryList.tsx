@@ -38,22 +38,23 @@ const CategoryList: React.FC = () => {
     <ul className="category-list">
       {categories.map((category) => (
         <li key={category.id} className="category-item">
-            
-          {editCategoryId === category.id ? (
-            <EditCategory
-              categoryId={category.id}
-              onCancel={handleEditCancel}
-              onCategoryUpdated={handleCategoryUpdated}
-            />
-          ) : (
-            <>
-              {category.name}
-              <button onClick={() => handleEditClick(category.id)} className="edit-button">
-                Edit
-              </button>
-              <DeleteCategory categoryId={category.id} onCategoryDeleted={handleCategoryUpdated} />
-            </>
-          )}
+          <p className="category-name">{category.name}</p>
+          <div className="button-container">
+            {editCategoryId === category.id ? (
+              <EditCategory
+                categoryId={category.id}
+                onCancel={handleEditCancel}
+                onCategoryUpdated={handleCategoryUpdated}
+              />
+            ) : (
+              <>
+                <button onClick={() => handleEditClick(category.id)} className="edit-button">
+                  Edit
+                </button>
+                <DeleteCategory categoryId={category.id} onCategoryDeleted={handleCategoryUpdated} />
+              </>
+            )}
+          </div>
         </li>
       ))}
     </ul>
