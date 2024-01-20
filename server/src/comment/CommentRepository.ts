@@ -37,7 +37,7 @@ async function deleteComment(commentId: string) {
   }
 }
 
-async function editComment(commentId: string, updatedFields: Pick<Comment, 'description' >) {
+async function editComment(commentId: string, userId: string, updatedFields: Pick<Comment, 'description' >) {
   try {
     const commentsCollection = collection(db, 'comments');
     const commentRef = doc(commentsCollection, commentId);
@@ -45,7 +45,11 @@ async function editComment(commentId: string, updatedFields: Pick<Comment, 'desc
     const commentSnapshot = await getDoc(commentRef);
 
     if (commentSnapshot.exists() && !commentSnapshot.data().isDeleted) {
-      await updateDoc(commentRef, updatedFields);
+      if (commentSnapshot.data().creatorUserId === userId) {
+        await updateDoc(commentRef, updatedFields);
+      } else {
+        throw new Error('User is not the creator of the comment');
+      }
     } else {
       throw new Error('Comment not found or deleted');
     }

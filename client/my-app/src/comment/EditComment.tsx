@@ -1,7 +1,8 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Comment } from '../models/IComment';
 import { editComment } from '../services/CommentService';
-import '../css/EditComment.css'
+import '../css/EditComment.css';
+import { getAccessToken } from '../services/AuthService';
 
 interface EditCommentProps {
   commentId: string;
@@ -33,8 +34,14 @@ const EditComment: React.FC<EditCommentProps> = ({ initialData, onEditDone }) =>
     }
 
     try {
-      await editComment(editedData);
-      onEditDone();
+      const accessToken = getAccessToken();
+
+      if (accessToken) {
+        await editComment(editedData, accessToken);
+        onEditDone();
+      } else {
+        console.error('User does not have admin privileges or accessToken is null.');
+      }
     } catch (error) {
       console.error('Error editing comment:', error);
     }

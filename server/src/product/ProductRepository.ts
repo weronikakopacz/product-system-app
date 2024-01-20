@@ -58,30 +58,35 @@ async function deleteProduct(productId: string) {
   }
 }
 
-async function editProduct(productId: string, updatedFields: Pick<Product, 'title' | 'description' | 'imageUrl' | 'categoryIds'>) {
+async function editProduct(userId: string, productId: string, updatedFields: Pick<Product, 'title' | 'description' | 'imageUrl' | 'categoryIds'>) {
   try {
     const productsCollection = collection(db, 'products');
     const productRef = doc(productsCollection, productId);
 
     const productSnapshot = await getDoc(productRef);
 
-    if (!productSnapshot.exists() || productSnapshot.data().isDeleted) {
+    if (!productSnapshot.exists() || productSnapshot.data()?.isDeleted) {
       throw new Error('Product not found or deleted');
     }
 
-    const categoriesCollection = collection(db, 'categories');
-    const categoriesQuery = query(categoriesCollection, where('isDeleted', '==', false));
+    if (productSnapshot.data()?.creatorUserId === userId) {
+      const categoriesCollection = collection(db, 'categories');
+      const categoriesQuery = query(categoriesCollection, where('isDeleted', '==', false));
 
-    const existingCategoriesSnapshot = await getDocs(categoriesQuery);
-    const existingCategoriesIds = existingCategoriesSnapshot.docs.map(doc => doc.id);
+      const existingCategoriesSnapshot = await getDocs(categoriesQuery);
+      const existingCategoriesIds = existingCategoriesSnapshot.docs.map(doc => doc.id);
 
-    const invalidCategoryIds = updatedFields.categoryIds.filter(id => !existingCategoriesIds.includes(id));
+      const invalidCategoryIds = updatedFields.categoryIds.filter(id => !existingCategoriesIds.includes(id));
 
-    if (invalidCategoryIds.length > 0) {
-      throw new Error(`Invalid categoryIds: ${invalidCategoryIds.join(', ')}`);
+      if (invalidCategoryIds.length > 0) {
+        throw new Error(`Invalid categoryIds: ${invalidCategoryIds.join(', ')}`);
+      }
+
+      await updateDoc(productRef, updatedFields);
+    } else {
+      throw new Error('User is not the creator of the product');
     }
 
-    await updateDoc(productRef, updatedFields);
   } catch (error) {
     console.error('Error editing product in the database:', error);
     throw error;

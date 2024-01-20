@@ -3,8 +3,8 @@ import { Comment } from '../models/IComment.js';
 import { addComment, deleteComment, editComment } from "../comment/CommentRepository.js";
 import { getProductDetails } from "../product/ProductDetails.js";
 import { getDisplayComments } from "../comment/DisplayCommentRepository.js";
-import verifyToken, { DecodedToken } from "../user/VerifyToken.js";
 import { authenticateAdmin } from "../user/AuthMiddleware.js";
+import verifyToken, { DecodedToken } from "../user/VerifyToken.js";
 
 const commentRouter = express.Router();
 
@@ -43,17 +43,32 @@ commentRouter.put('/edit/:commentId', async (req, res) => {
   try {
     const commentId = req.params.commentId;
     const updatedFields = req.body;
+    const accessToken = req.header('Authorization')?.split(' ')[1];
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const decodedToken: DecodedToken | null = await verifyToken(accessToken);
+    if (!decodedToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const userUid: string | undefined = decodedToken.userId;
 
+    if (!userUid) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     if ('description' in updatedFields && updatedFields.description.trim() === '') {
       return res.status(400).send('Description cannot be empty');
     }
-
-    await editComment(commentId, updatedFields);
+    await editComment(commentId, userUid, updatedFields);
 
     res.status(204).send();
   } catch (error) {
     console.error('Error editing comment:', error);
-    res.status(500).send('Internal Server Error');
+    if (error === 'User is not the creator of the comment') {
+      res.status(403).send('Forbidden: You are not the creator of the comment');
+    } else {
+      res.status(500).send('Internal Server Error');
+    }
   }
 });
 

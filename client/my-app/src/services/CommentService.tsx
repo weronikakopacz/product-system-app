@@ -14,10 +14,14 @@ export const fetchComments = async (productId: string): Promise<{ comments: Comm
   };
 };
 
-export const editComment = async (editedData: Comment): Promise<void> => {
+export const editComment = async (editedData: Comment, accessToken: string): Promise<void> => {
   const { id, ...dataWithoutId } = editedData;
   try {
-    await axios.put(`${API_BASE_URL}/edit/${id}`, dataWithoutId);
+    await axios.put(`${API_BASE_URL}/edit/${id}`, dataWithoutId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
   } catch (error) {
     console.error('Error editing comment:', error);
     throw error;

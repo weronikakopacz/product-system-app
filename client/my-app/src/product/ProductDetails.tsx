@@ -9,6 +9,7 @@ import DeleteProduct from './DeleteProduct';
 import EditProduct from './EditProduct';
 import CommentList from '../comment/CommentList';
 import AddComment from '../comment/AddComment';
+import { checkUserUid } from '../user/CheckUserUid';
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +17,7 @@ const ProductDetails: React.FC = () => {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [creatorEmail, setCreatorEmail] = useState<string | null>('');
   const [categoryNames, setCategoryNames] = useState<string[]>([]);
+  const [userUid, setUserUid] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +33,8 @@ const ProductDetails: React.FC = () => {
             }
             const categoryNames = await getCategoryNames(productData.categoryIds);
             setCategoryNames(categoryNames);
+            const uid = await checkUserUid();
+            setUserUid(uid);
           } else {
             console.error('Product details not found.');
           }
@@ -78,9 +82,13 @@ const ProductDetails: React.FC = () => {
           <p>Categories: {categoryNames.join(', ')}</p>
           {product.imageUrl && <img src={product.imageUrl} alt={product.title} />}
           <div>
-            <button className="button" onClick={handleEdit}>
-              Edit
-            </button>
+          {userUid === product.creatorUserId && (
+                  <>
+                    <button className="button" onClick={() => handleEdit}>
+                      Edit
+                    </button>
+                  </>
+                )}
             <DeleteProduct productId={product.id} onProductDeleted={handleDelete} />
           </div>
           {editingProductId === product.id && (

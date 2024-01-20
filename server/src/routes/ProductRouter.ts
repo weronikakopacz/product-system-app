@@ -3,8 +3,8 @@ import { addProduct, deleteProduct, editProduct } from '../product/ProductReposi
 import { getDisplayProducts } from '../product/DisplayProductRepository.js';
 import { Product } from '../models/IProduct.js';
 import { getProductDetails } from '../product/ProductDetails.js';
-import verifyToken, { DecodedToken } from '../user/VerifyToken.js';
 import { authenticateAdmin } from '../user/AuthMiddleware.js';
+import verifyToken, { DecodedToken } from '../user/VerifyToken.js';
 
 const productRouter = express.Router();
 const PAGE_NUMBER = 5;
@@ -73,9 +73,24 @@ productRouter.put('/edit/:productId', async (req, res) => {
     if ('title' in updatedFields && updatedFields.title.trim() === '') {
       return res.status(400).send('Title cannot be empty');
     }
+    const accessToken = req.header('Authorization')?.split(' ')[1];
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const decodedToken: DecodedToken | null = await verifyToken(accessToken);
+    if (!decodedToken) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const userUid: string | undefined = decodedToken.userId;
 
-    await editProduct(productId, updatedFields);
+    if (!userUid) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    if ('description' in updatedFields && updatedFields.description.trim() === '') {
+      return res.status(400).send('Description cannot be empty');
+    }
 
+    await editProduct(userUid, productId, updatedFields);
     res.status(204).send();
   } catch (error) {
     console.error('Error editing product:', error);

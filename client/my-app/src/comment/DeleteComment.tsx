@@ -16,7 +16,6 @@ const DeleteComment: React.FC<DeleteCommentProps> = ({ commentId, onCommentDelet
       const role = await checkUserRole();
       setUserRole(role);
     };
-
     fetchUserRole();
   }, []);
 

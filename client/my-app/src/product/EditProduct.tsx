@@ -4,6 +4,7 @@ import '../css/EditProduct.css';
 import { Product } from '../models/IProduct';
 import { editProduct } from '../services/ProductService';
 import { getDisplayCategories } from '../services/CategoryService';
+import { getAccessToken } from '../services/AuthService';
 
 interface EditProductProps {
   productId: string;
@@ -69,8 +70,14 @@ const EditProduct: React.FC<EditProductProps> = ({ initialData, onEditDone }) =>
     }
 
     try {
-      await editProduct(editedData);
-      onEditDone();
+      const accessToken = getAccessToken();
+
+      if (accessToken) {
+        await editProduct(editedData, accessToken);
+        onEditDone();
+      } else {
+        console.error('User does not have admin privileges or accessToken is null.');
+      }
     } catch (error) {
       console.error('Error editing product:', error);
     }

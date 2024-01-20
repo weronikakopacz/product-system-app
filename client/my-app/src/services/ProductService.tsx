@@ -14,10 +14,14 @@ export const fetchProducts = async (currentPage: number, searchQuery?: string): 
   };
 };
 
-export const editProduct = async (editedData: Product): Promise<void> => {
+export const editProduct = async (editedData: Product, accessToken: string): Promise<void> => {
   const { id, ...dataWithoutId } = editedData;
   try {
-    await axios.put(`${API_BASE_URL}/edit/${id}`, dataWithoutId);
+    await axios.put(`${API_BASE_URL}/edit/${id}`, dataWithoutId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
   } catch (error) {
     console.error('Error editing product:', error);
     throw error;
