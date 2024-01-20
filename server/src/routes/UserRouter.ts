@@ -11,6 +11,7 @@ import { changePassword } from '../user/ChangePassword.js';
 import { changeEmail } from '../user/ChangeEmail.js';
 import { changeRole } from '../user/ChangeRole.js';
 import { getAllUsers } from '../user/GetAllUsers.js';
+import { authenticateAdmin } from '../user/AuthMiddleware.js';
 
 const userRouter = express.Router();
 
@@ -165,26 +166,11 @@ userRouter.post('/change-password', async (req, res) => {
   }
 });
 
-userRouter.put('/change-role', async (req, res) => {
+userRouter.put('/change-role', authenticateAdmin, async (req, res) => {
   try {
     const { userId, newRole } = req.body;
-    const accessToken = req.header('Authorization')?.split(' ')[1];
-    if (!accessToken) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const decodedToken: DecodedToken | null = await verifyToken(accessToken);
-    if (decodedToken) {
-      const userRole: string | undefined = decodedToken.role;
-      if (userRole !== 'admin') {
-        return res.status(403).json({ error: 'Forbidden' });
-      }
-    
-      await changeRole(userId, newRole);
-      res.status(204).send();
-    } else {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+    await changeRole(userId, newRole);
+    res.status(204).send();
   } catch (error) {
     console.error('Error changing user role:', error);
     res.status(500).json({ error: 'Internal Server Error' });

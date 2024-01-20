@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { deleteProduct } from '../services/ProductService';
 import { getAccessToken } from '../services/AuthService';
-import { getUserProfile } from '../services/UserService';
+import { checkUserRole } from '../user/CheckUserRole';
 
 interface DeleteProductProps {
   productId: string;
@@ -12,22 +12,12 @@ const DeleteProduct: React.FC<DeleteProductProps> = ({ productId, onProductDelet
   const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const accessToken = getAccessToken();
-
-        if (accessToken) {
-          const response = await getUserProfile(accessToken);
-
-          setUserRole(response.role);
-        }
-      } catch (error) {
-        console.error('Error checking user role:', error);
-        setUserRole('user');
-      }
+    const fetchUserRole = async () => {
+      const role = await checkUserRole();
+      setUserRole(role);
     };
 
-    checkUserRole();
+    fetchUserRole();
   }, []);
 
   const handleDelete = async () => {
@@ -46,7 +36,7 @@ const DeleteProduct: React.FC<DeleteProductProps> = ({ productId, onProductDelet
   };
 
   if (userRole === null) {
-    // warunkowe renderowanie
+    // Warunkowe renderowanie
     return null;
   }
 

@@ -1,0 +1,30 @@
+.category-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .category-item {
+    margin-bottom: 16px;
+  }
+  
+  .edit-button {
+    cursor: pointer;
+    background-color: #afafaf;
+    color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    width: 200px;
+  }
+
+  .delete-button {
+    width: 200px;
+    margin-left: 8px;
+    cursor: pointer;
+    background-color: #afafaf;
+    color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+  }
+  

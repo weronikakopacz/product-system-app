@@ -1,13 +1,57 @@
 .edit-product {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 300px;
-    margin: 0 auto;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px; /* Zwiększono maksymalną szerokość dla lepszej prezentacji */
+  margin: 20px auto; /* Dodano odstęp od góry i dołu */
+  padding: 20px; /* Dodano wypełnienie dla lepszego rozróżnienia odległości od krawędzi */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-  .error-message {
-    color: red;
-    margin-top: 5px;
-  }
-  
+/* Styl dla kategorii */
+.edit-product label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Zmniejszono odstęp dla lepszego wyglądu */
+}
+
+/* Styl dla pola wyboru kategorii */
+.edit-product .category-select {
+  width: 100%;
+}
+
+/* Dodano styl dla przycisku Anuluj */
+.edit-product button.cancel {
+  background-color: #ccc;
+  color: #333;
+  margin-top: 0;
+}
+
+/* Zmieniono kolor przycisku Anuluj po najechaniu myszą */
+.edit-product button.cancel:hover {
+  background-color: #999;
+}
+
+/* Dodano styl dla przycisku Edytuj */
+.edit-product button.edit {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* Zmieniono kolor przycisku Edytuj po najechaniu myszą */
+.edit-product button.edit:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+}

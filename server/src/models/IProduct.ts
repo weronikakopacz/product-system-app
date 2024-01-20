@@ -8,6 +8,7 @@ interface Product {
     creationDate: Timestamp;
     creatorUserId: string;
     imageUrl: string;
+    categoryIds: string[];
   }
 
 export { Product } 

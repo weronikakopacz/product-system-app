@@ -8,6 +8,7 @@ import Login from './user/Login';
 import Registration from './user/Registration';
 import Logout from './user/Logout';
 import UserProfile from './user/UserProfile';
+import ManageCategory from './pages/ManageCategory';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/register" element={<Registration />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/user" element={<UserProfile />} />
+          <Route path="/categories" element={<ManageCategory />} />
         </Routes>
       </div>
     

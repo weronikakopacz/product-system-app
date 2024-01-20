@@ -1,0 +1,19 @@
+.add-category-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: auto;
+  }
+  
+  .category-input {
+    margin-top: 8px;
+    padding: 8px;
+  }
+  
+  .add-category-button {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #afafaf;;
+    color: #fff;
+    cursor: pointer;
+  }

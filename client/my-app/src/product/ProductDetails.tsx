@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/ProductService';
 import { Product } from '../models/IProduct';
 import { getUserEmail } from '../services/UserService';
+import { getCategoryNames } from '../services/CategoryService';
 import '../css/ProductDetails.css';
 import DeleteProduct from './DeleteProduct';
 import EditProduct from './EditProduct';
@@ -14,6 +15,7 @@ const ProductDetails: React.FC = () => {
   const [product, setProduct] = useState<Product | undefined>(undefined);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [creatorEmail, setCreatorEmail] = useState<string | null>('');
+  const [categoryNames, setCategoryNames] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +29,8 @@ const ProductDetails: React.FC = () => {
               const userData = await getUserEmail(productData.creatorUserId);
               setCreatorEmail(userData.email);
             }
+            const categoryNames = await getCategoryNames(productData.categoryIds);
+            setCategoryNames(categoryNames);
           } else {
             console.error('Product details not found.');
           }
@@ -71,6 +75,7 @@ const ProductDetails: React.FC = () => {
           <p>{product.description}</p>
           <p>Creator: {creatorEmail}</p>
           <p>Creation Date: {new Date(product.creationDate.seconds * 1000).toLocaleString()}</p>
+          <p>Categories: {categoryNames.join(', ')}</p>
           {product.imageUrl && <img src={product.imageUrl} alt={product.title} />}
           <div>
             <button className="button" onClick={handleEdit}>

@@ -7,6 +7,7 @@ interface DisplayProduct {
     creationDate: Timestamp;
     creatorUserId: string;
     imageUrl: string;
+    categoryIds: string[];
   }
 
 export { DisplayProduct }

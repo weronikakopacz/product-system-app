@@ -5,6 +5,7 @@ interface Product {
     creatorUserId: string;
     creationDate: { seconds: number; nanoseconds: number };
     imageUrl: string;
+    categoryIds: string[];
   }
 
 export type { Product }

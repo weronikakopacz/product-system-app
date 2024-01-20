@@ -1,12 +1,24 @@
 import { Product } from "../models/IProduct.js";
 import { db } from "../database/FirebaseConfig.js";
-import { Timestamp, addDoc, collection, doc, getDoc, getDocs, query, runTransaction, updateDoc, where } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { deleteComment } from "../comment/CommentRepository.js";
 
 async function addProduct(newProduct: Omit<Product, 'id' | 'isDeleted' | 'creationDate'>) {
   try {
-    if (!newProduct.title) {
-      throw new Error('Title is required field');
+    if (!newProduct.title || !newProduct.categoryIds || newProduct.categoryIds.length === 0) {
+      throw new Error('Title and non-empty categoryIds are required fields');
+    }
+
+    const categoriesCollection = collection(db, 'categories');
+    const categoriesQuery = query(categoriesCollection, where('isDeleted', '==', false));
+
+    const existingCategoriesSnapshot = await getDocs(categoriesQuery);
+    const existingCategoriesIds = existingCategoriesSnapshot.docs.map(doc => doc.id);
+
+    const invalidCategoryIds = newProduct.categoryIds.filter(id => !existingCategoriesIds.includes(id));
+    
+    if (invalidCategoryIds.length > 0) {
+      throw new Error(`Invalid categoryIds: ${invalidCategoryIds.join(', ')}`);
     }
 
     const productToAdd: Product = {
@@ -46,18 +58,30 @@ async function deleteProduct(productId: string) {
   }
 }
 
-async function editProduct(productId: string, updatedFields: Pick<Product, 'title' | 'description' | 'imageUrl'>) {
+async function editProduct(productId: string, updatedFields: Pick<Product, 'title' | 'description' | 'imageUrl' | 'categoryIds'>) {
   try {
     const productsCollection = collection(db, 'products');
     const productRef = doc(productsCollection, productId);
 
     const productSnapshot = await getDoc(productRef);
 
-    if (productSnapshot.exists() && !productSnapshot.data().isDeleted) {
-      await updateDoc(productRef, updatedFields);
-    } else {
+    if (!productSnapshot.exists() || productSnapshot.data().isDeleted) {
       throw new Error('Product not found or deleted');
     }
+
+    const categoriesCollection = collection(db, 'categories');
+    const categoriesQuery = query(categoriesCollection, where('isDeleted', '==', false));
+
+    const existingCategoriesSnapshot = await getDocs(categoriesQuery);
+    const existingCategoriesIds = existingCategoriesSnapshot.docs.map(doc => doc.id);
+
+    const invalidCategoryIds = updatedFields.categoryIds.filter(id => !existingCategoriesIds.includes(id));
+
+    if (invalidCategoryIds.length > 0) {
+      throw new Error(`Invalid categoryIds: ${invalidCategoryIds.join(', ')}`);
+    }
+
+    await updateDoc(productRef, updatedFields);
   } catch (error) {
     console.error('Error editing product in the database:', error);
     throw error;

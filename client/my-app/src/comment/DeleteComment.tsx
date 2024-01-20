@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { deleteComment } from '../services/CommentService';
 import { getAccessToken } from '../services/AuthService';
-import { getUserProfile } from '../services/UserService';
+import { checkUserRole } from '../user/CheckUserRole';
 
 interface DeleteCommentProps {
   commentId: string;
@@ -12,22 +12,12 @@ const DeleteComment: React.FC<DeleteCommentProps> = ({ commentId, onCommentDelet
   const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const accessToken = getAccessToken();
-
-        if (accessToken) {
-          const response = await getUserProfile(accessToken);
-
-          setUserRole(response.role);
-        }
-      } catch (error) {
-        console.error('Error checking user role:', error);
-        setUserRole('user');
-      }
+    const fetchUserRole = async () => {
+      const role = await checkUserRole();
+      setUserRole(role);
     };
 
-    checkUserRole();
+    fetchUserRole();
   }, []);
 
   const handleDelete = async () => {
@@ -46,7 +36,7 @@ const DeleteComment: React.FC<DeleteCommentProps> = ({ commentId, onCommentDelet
   };
 
   if (userRole === null) {
-    // warunkowe renderowanie
+    // Warunkowe renderowanie
     return null;
   }
 
