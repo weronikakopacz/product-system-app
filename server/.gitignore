@@ -1,4 +1,4 @@
 /node_modules
 /dist
-/src/database/serviceAccountKey.json
-.env
+src/database/serviceAccountKey.json
+src/.env
